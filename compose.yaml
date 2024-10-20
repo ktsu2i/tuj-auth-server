@@ -5,11 +5,13 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./:/app
+      - .:/app
     depends_on:
       db:
         condition: service_healthy
     restart: on-failure
+    env_file:
+      - .env
     networks:
       - tuj-network
 
@@ -21,10 +23,10 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=tuj_auth_dev
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
