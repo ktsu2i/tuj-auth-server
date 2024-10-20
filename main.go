@@ -1,13 +1,14 @@
 package main
 
 import (
-	"net/http"
+	"tuj-auth-server/db"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+	db.Init()
 	e := echo.New()
 
 	// Middleware
@@ -20,9 +21,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
-	})
+	// API routes
+	route(e)
 
 	// Run server
 	e.Logger.Fatal(e.Start(":8080"))

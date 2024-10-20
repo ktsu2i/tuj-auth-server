@@ -1,14 +1,14 @@
 FROM golang:1.23-bookworm
 
-WORKDIR /code
+WORKDIR /app
 
 RUN go install github.com/air-verse/air@latest
 RUN go install github.com/rubenv/sql-migrate/...@latest
 
-COPY go.mod go.sum /code/
+COPY go.mod go.sum /app/
 RUN go mod download
 
-COPY . /code
-COPY .air.toml /code/.air.toml
+COPY . /app
+COPY .air.toml /app/.air.toml
 
 CMD ["sh", "-c", "sql-migrate up && air -c .air.toml"]
