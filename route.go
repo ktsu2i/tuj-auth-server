@@ -9,5 +9,11 @@ import (
 func route(e *echo.Echo) {
 	api := e.Group("/api/v1")
 
-	api.GET("/", handlers.Root)
+	// No JWT auth required
+	api.POST("/sign-up", handlers.SignUp)
+	api.POST("/login", handlers.Login)
+
+	// JWT auth required
+	api.POST("/logout", handlers.Logout)
+	api.GET("/validate-token", handlers.ValidateToken)
 }

@@ -1,13 +1,17 @@
 package main
 
 import (
+	"os"
 	"tuj-auth-server/db"
 
+	"github.com/joho/godotenv"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+	godotenv.Load()
 	db.Init()
 	e := echo.New()
 
@@ -19,6 +23,15 @@ func main() {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowCredentials: true,
+	}))
+
+	api := e.Group("/api/v1")
+	api.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(os.Getenv("JWT_SECRET")),
+		Skipper: func(c echo.Context) bool {
+			path := c.Path()
+			return path == "/api/sign-up" || path == "/api/login"
+		},
 	}))
 
 	// API routes
